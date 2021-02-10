@@ -1,11 +1,16 @@
 import { Module } from '@nestjs/common';
-
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { DataModule } from './data';
+import { DatabaseModule } from './database';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    DatabaseModule.register({
+      uri: 'mongodb://localhost:27017',
+      dbName: 'podgroup',
+    }),
+    DataModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
