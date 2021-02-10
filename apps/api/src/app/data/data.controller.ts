@@ -1,11 +1,17 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import {
   ApiOperation,
   ApiResponse,
   ApiOkResponse,
   ApiNotFoundResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
-import { DataDto } from '@podgroup/api-interfaces';
+import {
+  DataDto,
+  DataListRequestDto,
+  DataListResponseDto,
+  ListResponseDto,
+} from '@podgroup/api-interfaces';
 import { DataService } from './data.service';
 
 @Controller('data')
@@ -15,9 +21,12 @@ export class DataController {
   @Get()
   @ApiOkResponse()
   @ApiOperation({ summary: 'Return list of data elements' })
-  @ApiResponse({ type: DataDto, isArray: true })
-  getList() {
-    return this.dataService.getList();
+  @ApiQuery({ type: DataListRequestDto })
+  @ApiResponse({ type: ListResponseDto })
+  getList(
+    @Query() requestDto: DataListRequestDto
+  ): Promise<DataListResponseDto> {
+    return this.dataService.getList(requestDto);
   }
 
   @Get(':id')
