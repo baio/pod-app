@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Message } from '@podgroup/api-interfaces';
 import * as mongoose from 'mongoose';
 import { DATA_MODEL } from './constants';
 import { Data } from './models';
