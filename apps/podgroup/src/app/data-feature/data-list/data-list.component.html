@@ -1,4 +1,12 @@
-<button nz-button nzType="primary" (click)="onCreate()" nzShape="round" style="float: right;">Create</button>
+<button
+  nz-button
+  nzType="primary"
+  (click)="onCreate()"
+  nzShape="round"
+  style="float: right"
+>
+  Create
+</button>
 <ng-container *ngIf="view$ | async as view">
   <nz-alert
     *ngIf="view.status.kind === 'TableStatusError'"
@@ -48,6 +56,8 @@
         <td>{{ data.status }}</td>
         <td>{{ data.usageBytes }}</td>
         <td>
+          <a (click)="onEdit(data)">Edit</a>
+          <nz-divider nzType="vertical"></nz-divider>
           <a (click)="onDelete(data)">Delete</a>
         </td>
       </tr>

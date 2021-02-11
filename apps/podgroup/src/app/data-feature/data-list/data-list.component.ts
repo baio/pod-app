@@ -189,4 +189,36 @@ export class DataListComponent {
       ],
     });
   }
+
+  onEdit(data: Data) {
+    const modal: NzModalRef = this.modalService.create({
+      nzTitle: 'Edit item',
+      nzContent: DataEditItemComponent,
+      nzComponentParams: {
+        data,
+      },
+      nzFooter: [
+        {
+          label: 'Cancel',
+          onClick: () => modal.destroy(),
+        },
+        {
+          label: 'Update',
+          type: 'primary',
+          disabled: (componentInstance) => componentInstance.form.invalid,
+          onClick: async (componentInstance) => {
+            try {
+              await this.dataService
+                .updateItem(data._id, componentInstance.form.value)
+                .toPromise();
+              this.reload$.next('reload');
+              modal.destroy();
+            } catch (err) {
+              componentInstance.error = err.error.message;
+            }
+          },
+        },
+      ],
+    });
+  }
 }
