@@ -8,7 +8,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../api/src/app/app.module';
 import * as request from 'supertest';
 
-describe('filter-data', () => {
+// run these only on freshly migrated data from data file
+describe.skip('filter-data', () => {
   let app: INestApplication;
   let server: any;
 

@@ -15,6 +15,10 @@ docker cp assets/assetsSimcardTable-test.csv local-mongo:/tmp/data.csv
 docker exec local-mongo mongoimport -d podgroup -c testdata --type csv --columnsHaveTypes --fields "subscriberId.string(),status.auto(),usageBytes.auto()" --file /tmp/data.csv
 ```
 
+## Tests
+
++ `npm run test:api -- --watch` run api tests in watch mode (db connection must be setup)
+
 ## Config (env)
 
 ## Run API

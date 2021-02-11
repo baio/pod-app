@@ -1,12 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { IDataListRequestDto } from '@podgroup/api-interfaces';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Data, IDataListRequestDto } from '@podgroup/api-interfaces';
+import { ObjectID } from 'mongodb';
 import * as mongoose from 'mongoose';
 import { DATA_MODEL } from './constants';
-import { Data } from './models';
+import { DataDoc } from './models';
 
 @Injectable()
 export class DataService {
-  constructor(@Inject(DATA_MODEL) private dataModel: mongoose.Model<Data>) {}
+  constructor(@Inject(DATA_MODEL) private dataModel: mongoose.Model<DataDoc>) {}
 
   async getList(request: IDataListRequestDto) {
     request = request || {};
@@ -64,6 +65,43 @@ export class DataService {
   }
 
   async getOne(id: string) {
-    return { id };
+    try {
+      const res = await this.dataModel.findById(new ObjectID(id)).exec();
+      return res.toJSON();
+    } catch {
+      // This is oversimplistic
+      throw new NotFoundException();
+    }
+  }
+
+  async create(data: Data) {
+    const res = await this.dataModel.create(data);
+    return res.toJSON();
+  }
+
+  async update(id: string, data: Data) {
+    try {
+      const res = await this.dataModel.findByIdAndUpdate(
+        new ObjectID(id),
+        data,
+        {
+          useFindAndModify: false,
+        }
+      );
+      return res.toJSON();
+    } catch (e) {
+      // This is oversimplistic
+      throw new NotFoundException();
+    }
+  }
+
+  async remove(id: string) {
+    try {
+      const res = await this.dataModel.findByIdAndRemove(new ObjectID(id));
+      return res.toJSON();
+    } catch {
+      // This is oversimplistic
+      throw new NotFoundException();
+    }
   }
 }

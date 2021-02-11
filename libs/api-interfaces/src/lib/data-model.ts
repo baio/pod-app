@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsInt } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsInt, IsOptional } from 'class-validator';
 
 export type DataStatus = 'active' | 'inactive' | 'preactive' | 'suspended';
 
@@ -11,14 +11,14 @@ export interface Data {
 }
 
 export enum Status {
-    active = 'active',
-    inactive = 'inactive',
-    preactive = 'preactive',
-    suspended = 'suspended',
+  active = 'active',
+  inactive = 'inactive',
+  preactive = 'preactive',
+  suspended = 'suspended',
 }
 
 export class DataDto implements Data {
-  @ApiProperty()
+  @ApiPropertyOptional()
   _id?: string;
 
   @ApiProperty({
@@ -26,7 +26,6 @@ export class DataDto implements Data {
     description: 'subscriberId is a string and can be started by zero',
     required: true,
   })
-  @IsInt()
   subscriberId: string;
 
   @ApiProperty({
