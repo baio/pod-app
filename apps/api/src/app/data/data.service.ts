@@ -12,7 +12,9 @@ export class DataService {
     request = request || {};
     let query = this.dataModel.find(); //.limit(10).exec();
     if (request['filter.status']) {
-      query = query.where({ status: request['filter.status'] as string });
+      query = query.where({
+        status: request['filter.status'] as string,
+      });
     }
     if (request['filter.subscriberId']) {
       query = query.where({
@@ -39,17 +41,24 @@ export class DataService {
         query = query.sort({ usageBytes: -1 });
       }
     }
+
     const page = +request['page'] > 0 ? +request['page'] : 1;
     const limit = +request['limit'] > 0 ? +request['limit'] : 25;
-    const limitQuery = query.skip((page - 1) * limit).limit(limit);
+    const limitQuery = this.dataModel
+      .find()
+      .merge(query)
+      .skip((page - 1) * limit)
+      .limit(limit);
+    const countQuery = this.dataModel.count().merge(query);
     const items = await limitQuery.exec();
-    const count = await query.count().exec();
+    const count = await countQuery.exec();
+
     return {
       items,
       pager: {
         limit,
         page,
-        length: count,
+        count,
       },
     };
   }

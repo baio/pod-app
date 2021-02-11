@@ -7,7 +7,7 @@ export class ListPagerDto {
   @ApiProperty({ description: 'page index started with 1', default: 1 })
   page: number;
   @ApiProperty({ description: 'total items count' })
-  length: number;
+  count: number;
   @ApiProperty({ description: 'items per page' })
   limit: number;
 }

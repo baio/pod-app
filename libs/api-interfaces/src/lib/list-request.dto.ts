@@ -28,7 +28,6 @@ export function ListRequestDto<S extends string = string>(
       default: defaultSort.page,
     })
     @ValidateIf((o) => !isNil(o.page))
-    @Transform((val) => +val)
     readonly page?: number;
 
     @ApiPropertyOptional({
@@ -37,7 +36,6 @@ export function ListRequestDto<S extends string = string>(
       default: defaultSort.limit,
     })
     @ValidateIf((o) => !isNil(o.limit))
-    @Transform((val) => +val)
     readonly limit?: number;
 
     @ApiPropertyOptional({
