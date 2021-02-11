@@ -1,12 +1,19 @@
-<button
-  nz-button
-  nzType="primary"
-  (click)="onCreate()"
-  nzShape="round"
-  style="float: right; margin-bottom: 0.2rem;"
->
-  Create
-</button>
+<div nz-row>
+  <nz-select [(ngModel)]="bytesTo" style="width: '200px'">
+    <nz-option nzValue="B" nzLabel="Bytes"></nz-option>
+    <nz-option nzValue="MB" nzLabel="Megabytes"></nz-option>
+  </nz-select>
+
+  <button
+    nz-button
+    nzType="primary"
+    (click)="onCreate()"
+    nzShape="round"
+    style="margin-left: 5rem; margin-bottom: 0.2rem"
+  >
+    Create
+  </button>
+</div>
 <ng-container *ngIf="view$ | async as view">
   <nz-alert
     *ngIf="view.status.kind === 'TableStatusError'"
@@ -15,7 +22,7 @@
     [nzDescription]="view.status['message']"
   >
   </nz-alert>
-  <div #tableContainer style="height: 100%;">
+  <div #tableContainer style="height: 100%">
     <nz-table
       (nzQueryParams)="onQueryParamsChange($event)"
       nzShowSizeChanger
@@ -47,7 +54,7 @@
             [nzFilterMultiple]="false"
             [nzFilters]="filterUsageBytes"
           >
-            Usage Bytes
+            Usage {{ bytesTo }}
           </th>
           <th>Action</th>
         </tr>
@@ -56,7 +63,7 @@
         <tr *ngFor="let data of view.list.items; trackBy: trackByRow">
           <td>{{ data.subscriberId }}</td>
           <td>{{ data.status }}</td>
-          <td>{{ data.usageBytes }}</td>
+          <td>{{ data.usageBytes | bytes: 2:'B':bytesTo }}</td>
           <td>
             <a (click)="onEdit(data)">Edit</a>
             <nz-divider nzType="vertical"></nz-divider>

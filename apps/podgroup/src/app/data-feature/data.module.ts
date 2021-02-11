@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DataEditItemComponent } from './data-edit-item/data-edit-item.component';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NgBytesPipeModule } from '../shared/bytes.pipe';
 
 @NgModule({
   imports: [
@@ -34,6 +35,7 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
     NzSelectModule,
     NzInputNumberModule,
     NzButtonModule,
+    NgBytesPipeModule,
   ],
   declarations: [DataListComponent, DataEditItemComponent],
   exports: [DataListComponent],

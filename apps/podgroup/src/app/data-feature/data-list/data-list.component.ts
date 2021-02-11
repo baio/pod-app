@@ -65,6 +65,8 @@ export class DataListComponent {
   >();
   readonly view$: Observable<TableView>;
 
+  bytesTo = 'MB';
+
   filterStatus = [
     { text: 'active', value: 'active' },
     { text: 'preactive', value: 'preactive' },
@@ -73,15 +75,14 @@ export class DataListComponent {
   ];
 
   filterUsageBytes = [
-    { text: '0', value: ',0' },
-    { text: '> 0', value: '1,' },
-    { text: '[1, 50000)', value: '1,49999' },
-    { text: '> 50000', value: '50000,' },
+    { text: '0 MB', value: ',0' },
+    { text: '< 5 MB', value: '1,5000000' },
+    { text: '> 5 MB', value: '5000000,' },
   ];
 
   constructor(
     private readonly dataService: DataService,
-    private readonly modalService: NzModalService
+    private readonly modalService: NzModalService,
   ) {
     const reload$ = this.reload$.pipe(
       scan((acc, curr) => {
