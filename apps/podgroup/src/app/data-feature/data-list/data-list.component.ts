@@ -5,11 +5,19 @@ import {
   DataListResponseDto,
   IDataListRequestDto,
 } from '@podgroup/api-interfaces';
-import { fromPairs, identity, pickBy } from 'lodash/fp';
+import { filter } from 'lodash';
+import { eq, equals, fromPairs, identity, pickBy } from 'lodash/fp';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableComponent, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { Observable, of, Subject } from 'rxjs';
-import { catchError, map, scan, startWith, switchMap } from 'rxjs/operators';
+import {
+  catchError,
+  distinctUntilChanged,
+  map,
+  scan,
+  startWith,
+  switchMap,
+} from 'rxjs/operators';
 import { DataEditItemComponent } from '../data-edit-item/data-edit-item.component';
 import { DataService } from '../data.service';
 
@@ -60,8 +68,8 @@ export class DataListComponent {
   filterStatus = [
     { text: 'active', value: 'active' },
     { text: 'preactive', value: 'preactive' },
-    { text: 'deactivated', value: 'deactivated' },
-    { text: 'suspended', value: 'suspendedfemale' },
+    { text: 'inactive', value: 'inactive' },
+    { text: 'suspended', value: 'suspended' },
   ];
 
   filterUsageBytes = [
@@ -76,7 +84,31 @@ export class DataListComponent {
     private readonly modalService: NzModalService
   ) {
     const reload$ = this.reload$.pipe(
-      scan((acc, curr) => (curr === 'reload' ? acc : curr)),
+      scan((acc, curr) => {
+        if (curr === 'reload') {
+          // reload data with pervious parameters
+          // hack to always pass distinctUntilChanged bellow
+          return {
+            ...(acc as IDataListRequestDto),
+            __time: new Date().getTime(),
+          };
+        } else if (curr.page && curr.page !== 1) {
+          // if perv filer != current filter or items per page is different reset page to index 1
+          if (
+            curr['filter.status'] !== acc['filter.status'] ||
+            curr['filter.subscriberId'] !== acc['filter.subscriberId'] ||
+            curr['filter.usageBytes'] !== acc['filter.usageBytes'] ||
+            curr['limit'] !== acc['limit']
+          ) {
+            return { ...curr, page: 1 };
+          }
+        }
+        return curr;
+      }),
+      // protect for double reloading when change table meta data during request
+      distinctUntilChanged((a, b) => {
+        return equals(a, b);
+      }),
       switchMap((request: IDataListRequestDto) =>
         dataService.loadList(request).pipe(
           map((response) => ({
@@ -110,6 +142,7 @@ export class DataListComponent {
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
+    console.log('onQueryParamsChange', params);
     const sort = params.sort.find((f) => f.value !== null);
     const filters = fromPairs(
       params.filter
@@ -227,7 +260,9 @@ export class DataListComponent {
   public tableHeight!: number;
   public ngAfterViewInit(): void {
     setTimeout(() => {
-      this.tableHeight = (this._tableContainer.nativeElement as HTMLImageElement).clientHeight - 150; // X depend of your page display
+      this.tableHeight =
+        (this._tableContainer.nativeElement as HTMLImageElement).clientHeight -
+        150; // X depend of your page display
     });
   }
 }
