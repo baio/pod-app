@@ -6,10 +6,16 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzAlertModule } from 'ng-zorro-antd/alert';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { CommonModule } from '@angular/common';
 import { DataService } from './data.service';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DataEditItemComponent } from './data-edit-item/data-edit-item.component';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 
 @NgModule({
   imports: [
@@ -21,9 +27,15 @@ import { FormsModule } from '@angular/forms';
     NzDropDownModule,
     FormsModule,
     NzModalModule,
-    NzAlertModule
+    NzAlertModule,
+    NzFormModule,
+    NzInputModule,
+    ReactiveFormsModule,
+    NzSelectModule,
+    NzInputNumberModule,
+    NzButtonModule,
   ],
-  declarations: [DataListComponent],
+  declarations: [DataListComponent, DataEditItemComponent],
   exports: [DataListComponent],
   providers: [DataService],
 })

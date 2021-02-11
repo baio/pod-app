@@ -1,0 +1,53 @@
+<nz-alert
+  style="margin-bottom: 1rem"
+  *ngIf="error"
+  nzType="error"
+  nzCloseable
+  [nzDescription]="error"
+>
+</nz-alert>
+
+<form nz-form [formGroup]="form">
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="subscriberId"
+      >Subscriber ID</nz-form-label
+    >
+    <nz-form-control
+      [nzSm]="14"
+      [nzXs]="24"
+      nzErrorTip="Subscriber ID required!"
+    >
+      <input nz-input formControlName="subscriberId" id="subscriberId" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="status"
+      >Status</nz-form-label
+    >
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Status required!">
+      <nz-select formControlName="status" id="status">
+        <nz-option nzValue="preactive" nzLabel="preactive"></nz-option>
+        <nz-option nzValue="active" nzLabel="active"></nz-option>
+        <nz-option nzValue="suspended" nzLabel="suspended"></nz-option>
+        <nz-option nzValue="disabled" nzLabel="disabled"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="subscriberId"
+      >Usage bytes</nz-form-label
+    >
+    <nz-form-control
+      [nzSm]="14"
+      [nzXs]="24"
+      nzExtra="This field required on server but not here to demonstrate error handling."
+    >
+      <nz-input-number
+        formControlName="usageBytes"
+        [nzMin]="1"
+        [nzMax]="999999999999999"
+        [nzStep]="1"
+      ></nz-input-number>
+    </nz-form-control>
+  </nz-form-item>
+</form>

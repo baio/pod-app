@@ -10,6 +10,7 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableComponent, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, map, scan, startWith, switchMap } from 'rxjs/operators';
+import { DataEditItemComponent } from '../data-edit-item/data-edit-item.component';
 import { DataService } from '../data.service';
 
 export interface TableStatusInitial {
@@ -153,6 +154,35 @@ export class DataListComponent {
                 nzTitle: 'Server error',
                 nzContent: err.error.message,
               });
+            }
+          },
+        },
+      ],
+    });
+  }
+
+  onCreate() {
+    const modal: NzModalRef = this.modalService.create({
+      nzTitle: 'Create new item',
+      nzContent: DataEditItemComponent,
+      nzFooter: [
+        {
+          label: 'Cancel',
+          onClick: () => modal.destroy(),
+        },
+        {
+          label: 'Create',
+          type: 'primary',
+          disabled: (componentInstance) => componentInstance.form.invalid,
+          onClick: async (componentInstance) => {
+            try {
+              await this.dataService
+                .createItem(componentInstance.form.value)
+                .toPromise();
+              this.reload$.next('reload');
+              modal.destroy();
+            } catch (err) {
+              componentInstance.error = err.error.message;
             }
           },
         },

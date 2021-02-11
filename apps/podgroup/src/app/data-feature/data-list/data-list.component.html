@@ -1,3 +1,4 @@
+<button nz-button nzType="primary" (click)="onCreate()" nzShape="round" style="float: right;">Create</button>
 <ng-container *ngIf="view$ | async as view">
   <nz-alert
     *ngIf="view.status.kind === 'TableStatusError'"
@@ -6,7 +7,6 @@
     [nzDescription]="view.status['message']"
   >
   </nz-alert>
-
   <nz-table
     #table
     (nzQueryParams)="onQueryParamsChange($event)"
