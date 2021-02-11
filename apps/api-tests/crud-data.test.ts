@@ -8,6 +8,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../api/src/app/app.module';
 import * as request from 'supertest';
 import * as mongoose from 'mongoose';
+import { before } from 'lodash';
 
 // run these only on freshly migrated data from data file
 describe('crud-data', () => {
@@ -107,5 +108,57 @@ describe('crud-data', () => {
 
   it('get item after remove', () => {
     return request(server).get(`/data/${createdId}`).expect(404);
+  });
+
+  describe('filters', () => {
+    describe('usageByres range', () => {
+      beforeAll(async () => {
+        await request(server)
+          .post('/data')
+          .send({ subscriberId: '001', usageBytes: 10, status: 'active' });
+        await request(server)
+          .post('/data')
+          .send({ subscriberId: '002', usageBytes: 20, status: 'active' });
+        await request(server)
+          .post('/data')
+          .send({ subscriberId: '003', usageBytes: 30, status: 'active' });
+      });
+
+      it('filter.usageBytes=1,20 should give 2 items', () =>
+        request(server)
+          .get(`/data?filter.usageBytes=1,20`)
+          .expect(200)
+          .expect((res) => {
+            const body = res.body;
+            expect(body.items.length).toEqual(2);
+          }));
+
+      it('filter.usageBytes=,20 should give 2 items', () =>
+        request(server)
+          .get(`/data?filter.usageBytes=,20`)
+          .expect(200)
+          .expect((res) => {
+            const body = res.body;
+            expect(body.items.length).toEqual(2);
+          }));
+
+      it('filter.usageBytes=,19 should give 1 items', () =>
+        request(server)
+          .get(`/data?filter.usageBytes=,19`)
+          .expect(200)
+          .expect((res) => {
+            const body = res.body;
+            expect(body.items.length).toEqual(1);
+          }));
+
+      it('filter.usageBytes=21, should give 1 items', () =>
+        request(server)
+          .get(`/data?filter.usageBytes=21,`)
+          .expect(200)
+          .expect((res) => {
+            const body = res.body;
+            expect(body.items.length).toEqual(1);
+          }));
+    });
   });
 });

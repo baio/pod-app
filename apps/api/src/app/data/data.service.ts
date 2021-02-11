@@ -23,9 +23,9 @@ export class DataService {
       });
     }
     if (request['filter.usageBytes']) {
-      const range = request['filter.usageBytes'].split(',');
-      const from = +range[0];
-      const to = +range[1];
+      const range = (' ' + request['filter.usageBytes']).split(',');
+      const from = range[0] && +range[0];
+      const to = range[1] && +range[1];
       if (from || from === 0) {
         query = query.where({ usageBytes: { $gte: from } });
       }

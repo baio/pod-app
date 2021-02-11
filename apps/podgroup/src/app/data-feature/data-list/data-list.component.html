@@ -12,8 +12,24 @@
     <thead>
       <tr>
         <th nzColumnKey="subscriberId" [nzSortFn]="true">SubscriberId</th>
-        <th nzColumnKey="status" [nzSortFn]="true">Status</th>
-        <th nzColumnKey="usageBytes" [nzSortFn]="true">Usage Bytes</th>
+        <th
+          nzColumnKey="status"
+          [nzSortFn]="true"
+          [nzFilterFn]="true"
+          [nzFilterMultiple]="false"
+          [nzFilters]="filterStatus"
+        >
+          Status
+        </th>
+        <th
+          nzColumnKey="usageBytes"
+          [nzSortFn]="true"
+          [nzFilterFn]="true"
+          [nzFilterMultiple]="false"
+          [nzFilters]="filterUsageBytes"
+        >
+          Usage Bytes
+        </th>
         <th>Action</th>
       </tr>
     </thead>

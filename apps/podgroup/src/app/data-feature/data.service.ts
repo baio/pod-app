@@ -17,12 +17,8 @@ export class DataService {
   ) {}
 
   loadList(request?: DataListRequestDto | null) {
-    const params = new HttpParams()
-      .set('page', request?.page?.toString())
-      .set('limit', request?.limit?.toString())
-      .set('sort', request.sort);
     return this.http.get<DataListResponseDto>(`${this.baseUrl}api/data`, {
-      params,
+      params: request as any,
     });
   }
 }
