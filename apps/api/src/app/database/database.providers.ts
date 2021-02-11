@@ -12,8 +12,8 @@ export const databaseProviders = [
     useFactory: (
       config: DatabaseConnectionConfig
     ): Promise<typeof mongoose> => {
-      if (!config) {
-        throw new Error('Connection config is not defined');
+      if (!config.uri || !config.dbName) {
+        throw new Error('Connection config uri or dbName is not defined');
       }
       return mongoose.connect(config.uri, {
         dbName: config.dbName,

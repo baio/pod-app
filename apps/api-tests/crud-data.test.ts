@@ -7,6 +7,7 @@ import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../api/src/app/app.module';
 import * as request from 'supertest';
+import * as mongoose from 'mongoose';
 
 // run these only on freshly migrated data from data file
 describe('crud-data', () => {
@@ -16,6 +17,11 @@ describe('crud-data', () => {
   let createdId: string;
 
   beforeAll(async () => {
+    const connection = await mongoose.connect(process.env.DB_HOST, {
+      dbName: process.env.DB_NAME,
+    });
+    await connection.connection.dropDatabase();
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -72,10 +78,7 @@ describe('crud-data', () => {
     return request(server)
       .put(`/data/5555555`)
       .send({ subscriberId: '001', usageBytes: 11, status: 'active' })
-      .expect(404)
-      .then((resp) => {
-        console.log(resp.body);
-      });
+      .expect(404);
   });
 
   it('get item after update', () => {
