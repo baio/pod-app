@@ -1,5 +1,6 @@
 <ng-container *ngIf="view$ | async as view">
   <nz-table
+    #table
     (nzQueryParams)="onQueryParamsChange($event)"
     nzShowSizeChanger
     [nzData]="view.list.items"
@@ -34,12 +35,12 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of view.list.items">
+      <tr *ngFor="let data of view.list.items; trackBy: trackByRow">
         <td>{{ data.subscriberId }}</td>
         <td>{{ data.status }}</td>
         <td>{{ data.usageBytes }}</td>
         <td>
-          <a>Delete</a>
+          <a (click)="onDelete(data, table)">Delete</a>
         </td>
       </tr>
     </tbody>

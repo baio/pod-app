@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
+  Data,
   DataListOrder,
-  DataListRequestDto,
   DataListResponseDto,
   IDataListRequestDto,
 } from '@podgroup/api-interfaces';
-import { Observable, Subject } from 'rxjs';
-import { DataService } from '../data.service';
-import { map, switchMap, startWith, tap } from 'rxjs/operators';
-import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { fromPairs, identity, pickBy } from 'lodash/fp';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { NzTableComponent, NzTableQueryParams } from 'ng-zorro-antd/table';
+import { Observable, Subject } from 'rxjs';
+import { map, scan, startWith, switchMap } from 'rxjs/operators';
+import { DataService } from '../data.service';
 
 export interface TableStatusInitial {
   kind: 'TableStatusInitial';
@@ -50,7 +51,9 @@ const defaultView: TableView = {
   styleUrls: ['./data-list.component.scss'],
 })
 export class DataListComponent {
-  private readonly reload$ = new Subject<IDataListRequestDto | null>();
+  private readonly reload$ = new Subject<
+    IDataListRequestDto | null | 'reload'
+  >();
   readonly view$: Observable<TableView>;
 
   filterStatus = [
@@ -67,10 +70,13 @@ export class DataListComponent {
     { text: '> 50000', value: '50000,' },
   ];
 
-
-  constructor(private readonly dataService: DataService) {
+  constructor(
+    private readonly dataService: DataService,
+    private readonly modalService: NzModalService
+  ) {
     const reload$ = this.reload$.pipe(
-      switchMap((request) => dataService.loadList(request))
+      scan((acc, curr) => (curr === 'reload' ? acc : curr)),
+      switchMap((request: IDataListRequestDto) => dataService.loadList(request))
     );
 
     this.view$ = reload$.pipe(
@@ -99,5 +105,37 @@ export class DataListComponent {
     };
     const cleanPrms = pickBy(identity, prms);
     this.reload$.next(cleanPrms);
+  }
+
+  trackByRow(_, item: Data) {
+    return item._id;
+  }
+
+  onDelete(item: Data, table: NzTableComponent) {
+    const modal: NzModalRef = this.modalService.create({
+      nzTitle: 'Warning',
+      nzContent: `You about to delete item subscriberId : ${item.subscriberId}, continue ?`,
+      nzFooter: [
+        {
+          label: 'Cancel',
+          onClick: () => modal.destroy(),
+        },
+        {
+          label: 'Yes',
+          danger: true,
+          onClick: async () => {
+            try {
+              await this.dataService.deleteItem(item._id).toPromise();
+              modal.destroy();
+            } catch (err) {
+              this.modalService.error({
+                nzTitle: 'Server error',
+                nzContent: err.error.message,
+              });
+            }
+          },
+        },
+      ],
+    });
   }
 }
