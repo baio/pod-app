@@ -3,7 +3,7 @@
   nzType="primary"
   (click)="onCreate()"
   nzShape="round"
-  style="float: right"
+  style="float: right; margin-bottom: 0.2rem;"
 >
   Create
 </button>
@@ -15,52 +15,56 @@
     [nzDescription]="view.status['message']"
   >
   </nz-alert>
-  <nz-table
-    #table
-    (nzQueryParams)="onQueryParamsChange($event)"
-    nzShowSizeChanger
-    [nzData]="view.list.items"
-    [nzFrontPagination]="false"
-    [nzLoading]="view.status.kind === 'TableStatusLoading'"
-    [nzTotal]="view.list.pager.count"
-    [nzPageSize]="view.list.pager.limit"
-    [nzPageIndex]="view.list.pager.page"
-  >
-    <thead>
-      <tr>
-        <th nzColumnKey="subscriberId" [nzSortFn]="true">SubscriberId</th>
-        <th
-          nzColumnKey="status"
-          [nzSortFn]="true"
-          [nzFilterFn]="true"
-          [nzFilterMultiple]="false"
-          [nzFilters]="filterStatus"
-        >
-          Status
-        </th>
-        <th
-          nzColumnKey="usageBytes"
-          [nzSortFn]="true"
-          [nzFilterFn]="true"
-          [nzFilterMultiple]="false"
-          [nzFilters]="filterUsageBytes"
-        >
-          Usage Bytes
-        </th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let data of view.list.items; trackBy: trackByRow">
-        <td>{{ data.subscriberId }}</td>
-        <td>{{ data.status }}</td>
-        <td>{{ data.usageBytes }}</td>
-        <td>
-          <a (click)="onEdit(data)">Edit</a>
-          <nz-divider nzType="vertical"></nz-divider>
-          <a (click)="onDelete(data)">Delete</a>
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
+  <div #tableContainer style="height: 100%;">
+    <nz-table
+      (nzQueryParams)="onQueryParamsChange($event)"
+      nzShowSizeChanger
+      [nzData]="view.list.items"
+      [nzFrontPagination]="false"
+      [nzLoading]="view.status.kind === 'TableStatusLoading'"
+      [nzTotal]="view.list.pager.count"
+      [nzPageSize]="view.list.pager.limit"
+      [nzPageIndex]="view.list.pager.page"
+      [nzScroll]="{ y: (tableHeight || 0) + 'px' }"
+      [nzTemplateMode]="false"
+      nzSize="compact"
+    >
+      <thead>
+        <tr>
+          <th nzColumnKey="subscriberId" [nzSortFn]="true">SubscriberId</th>
+          <th
+            nzColumnKey="status"
+            [nzSortFn]="true"
+            [nzFilterFn]="true"
+            [nzFilterMultiple]="false"
+            [nzFilters]="filterStatus"
+          >
+            Status
+          </th>
+          <th
+            nzColumnKey="usageBytes"
+            [nzSortFn]="true"
+            [nzFilterFn]="true"
+            [nzFilterMultiple]="false"
+            [nzFilters]="filterUsageBytes"
+          >
+            Usage Bytes
+          </th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of view.list.items; trackBy: trackByRow">
+          <td>{{ data.subscriberId }}</td>
+          <td>{{ data.status }}</td>
+          <td>{{ data.usageBytes }}</td>
+          <td>
+            <a (click)="onEdit(data)">Edit</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <a (click)="onDelete(data)">Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
 </ng-container>

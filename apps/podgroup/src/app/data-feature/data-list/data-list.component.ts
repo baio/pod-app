@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   Data,
   DataListOrder,
@@ -42,7 +42,7 @@ const defaultView: TableView = {
   },
   list: {
     items: [],
-    pager: { limit: 25, page: 1, count: 0 },
+    pager: { limit: 30, page: 1, count: 0 },
   },
 };
 
@@ -219,6 +219,15 @@ export class DataListComponent {
           },
         },
       ],
+    });
+  }
+
+  // control table height
+  @ViewChild('tableContainer') private readonly _tableContainer!: any;
+  public tableHeight!: number;
+  public ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.tableHeight = (this._tableContainer.nativeElement as HTMLImageElement).clientHeight - 150; // X depend of your page display
     });
   }
 }
