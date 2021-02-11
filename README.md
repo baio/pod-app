@@ -21,7 +21,7 @@ Following env variables defined by default for api app
 ```
 PORT=3333
 DB_HOST=mongodb://localhost:27017
-DB_NAME=podgroup_dev
+DB_NAME=podgroup
 ```
 
 [dotenv](https://www.npmjs.com/package/dotenv) package is used for configuration setup.

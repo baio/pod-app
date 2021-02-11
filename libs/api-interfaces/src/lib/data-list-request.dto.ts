@@ -5,11 +5,21 @@ import { IListRequestDto, ListRequestDto } from './list-request.dto';
 import { getEnumValues } from './utils';
 
 export enum DataOrder {
-  createdAt = 'usageBytes',
-  reverseCreatedAt = '-usageBytes',
+  usageBytes = 'usageBytes',
+  reverseUsageBytes = '-usageBytes',
+  subscriberId = 'subscriberId',
+  reverseSubscriberId = '-subscriberId',
+  status = 'status',
+  reverseStatus = '-status',
 }
 
-export type DataListOrder = 'usageBytes' | '-usageBytes';
+export type DataListOrder =
+  | 'usageBytes'
+  | '-usageBytes'
+  | 'subscriberId'
+  | '-subscriberId'
+  | 'status'
+  | '-status';
 
 export interface IDataListRequestDto extends IListRequestDto<DataListOrder> {
   'filter.subscriberId'?: string;

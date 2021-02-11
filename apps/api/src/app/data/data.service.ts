@@ -37,9 +37,16 @@ export class DataService {
       const sort = request['sort'];
       if (sort === 'usageBytes') {
         query = query.sort({ usageBytes: 1 });
-      }
-      if (sort === '-usageBytes') {
+      } else if (sort === '-usageBytes') {
         query = query.sort({ usageBytes: -1 });
+      } else if (sort === 'status') {
+        query = query.sort({ status: 1 });
+      } else if (sort === '-status') {
+        query = query.sort({ status: -1 });
+      } else if (sort === 'subscriberId') {
+        query = query.sort({ subscriberId: 1 });
+      } else if (sort === '-subscriberId') {
+        query = query.sort({ subscriberId: -1 });
       }
     }
 

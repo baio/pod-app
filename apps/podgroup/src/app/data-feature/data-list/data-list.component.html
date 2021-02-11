@@ -1,0 +1,31 @@
+<ng-container *ngIf="view$ | async as view">
+  <nz-table
+    (nzQueryParams)="onQueryParamsChange($event)"
+    nzShowSizeChanger
+    [nzData]="view.list.items"
+    [nzFrontPagination]="false"
+    [nzLoading]="view.status.kind === 'TableStatusLoadingTableStatusLoading'"
+    [nzTotal]="view.list.pager.count"
+    [nzPageSize]="view.list.pager.limit"
+    [nzPageIndex]="view.list.pager.page"
+  >
+    <thead>
+      <tr>
+        <th nzColumnKey="subscriberId" [nzSortFn]="true">SubscriberId</th>
+        <th nzColumnKey="status" [nzSortFn]="true">Status</th>
+        <th nzColumnKey="usageBytes" [nzSortFn]="true">Usage Bytes</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of view.list.items">
+        <td>{{ data.subscriberId }}</td>
+        <td>{{ data.status }}</td>
+        <td>{{ data.usageBytes }}</td>
+        <td>
+          <a>Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</ng-container>

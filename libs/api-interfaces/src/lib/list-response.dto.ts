@@ -17,5 +17,5 @@ export class ListResponseDto<T = any> {
   pager: ListPagerDto;
 
   @ApiProperty({ description: 'found items' })
-  items: any[];
+  items: T[];
 }
