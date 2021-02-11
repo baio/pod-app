@@ -5,6 +5,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzAlertModule } from 'ng-zorro-antd/alert';
 import { CommonModule } from '@angular/common';
 import { DataService } from './data.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -19,7 +20,8 @@ import { FormsModule } from '@angular/forms';
     HttpClientModule,
     NzDropDownModule,
     FormsModule,
-    NzModalModule
+    NzModalModule,
+    NzAlertModule
   ],
   declarations: [DataListComponent],
   exports: [DataListComponent],

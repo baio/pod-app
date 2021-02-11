@@ -1,11 +1,19 @@
 <ng-container *ngIf="view$ | async as view">
+  <nz-alert
+    *ngIf="view.status.kind === 'TableStatusError'"
+    nzType="error"
+    nzCloseable
+    [nzDescription]="view.status['message']"
+  >
+  </nz-alert>
+
   <nz-table
     #table
     (nzQueryParams)="onQueryParamsChange($event)"
     nzShowSizeChanger
     [nzData]="view.list.items"
     [nzFrontPagination]="false"
-    [nzLoading]="view.status.kind === 'TableStatusLoadingTableStatusLoading'"
+    [nzLoading]="view.status.kind === 'TableStatusLoading'"
     [nzTotal]="view.list.pager.count"
     [nzPageSize]="view.list.pager.limit"
     [nzPageIndex]="view.list.pager.page"
@@ -40,7 +48,7 @@
         <td>{{ data.status }}</td>
         <td>{{ data.usageBytes }}</td>
         <td>
-          <a (click)="onDelete(data, table)">Delete</a>
+          <a (click)="onDelete(data)">Delete</a>
         </td>
       </tr>
     </tbody>

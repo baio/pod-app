@@ -8,8 +8,8 @@ import {
 import { fromPairs, identity, pickBy } from 'lodash/fp';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { NzTableComponent, NzTableQueryParams } from 'ng-zorro-antd/table';
-import { Observable, Subject } from 'rxjs';
-import { map, scan, startWith, switchMap } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { catchError, map, scan, startWith, switchMap } from 'rxjs/operators';
 import { DataService } from '../data.service';
 
 export interface TableStatusInitial {
@@ -64,7 +64,7 @@ export class DataListComponent {
   ];
 
   filterUsageBytes = [
-    { text: '0 or empty', value: ',0' },
+    { text: '0', value: ',0' },
     { text: '> 0', value: '1,' },
     { text: '[1, 50000)', value: '1,49999' },
     { text: '> 50000', value: '50000,' },
@@ -76,16 +76,36 @@ export class DataListComponent {
   ) {
     const reload$ = this.reload$.pipe(
       scan((acc, curr) => (curr === 'reload' ? acc : curr)),
-      switchMap((request: IDataListRequestDto) => dataService.loadList(request))
+      switchMap((request: IDataListRequestDto) =>
+        dataService.loadList(request).pipe(
+          map((response) => ({
+            status: { kind: 'TableStatusInitial' as 'TableStatusInitial' },
+            list: response,
+          })),
+          catchError((err) =>
+            of({
+              status: {
+                kind: 'TableStatusError' as 'TableStatusError',
+                message: err.error.message,
+              },
+              list: null,
+            })
+          ),
+          startWith({
+            status: { kind: 'TableStatusLoading' as 'TableStatusLoading' },
+            list: null,
+          })
+        )
+      ),
+      scan(
+        (acc, curr) =>
+          // If current status doesn't contain list response, substitute it with pervious one, this way guarantee state always has latest list
+          curr.list === null ? { ...curr, list: acc.list } : curr,
+        defaultView
+      )
     );
 
-    this.view$ = reload$.pipe(
-      map((response) => ({
-        status: { kind: 'TableStatusInitial' as 'TableStatusInitial' },
-        list: response,
-      })),
-      startWith(defaultView)
-    );
+    this.view$ = reload$.pipe(startWith(defaultView));
   }
 
   onQueryParamsChange(params: NzTableQueryParams) {
@@ -111,7 +131,7 @@ export class DataListComponent {
     return item._id;
   }
 
-  onDelete(item: Data, table: NzTableComponent) {
+  onDelete(item: Data) {
     const modal: NzModalRef = this.modalService.create({
       nzTitle: 'Warning',
       nzContent: `You about to delete item subscriberId : ${item.subscriberId}, continue ?`,
@@ -126,6 +146,7 @@ export class DataListComponent {
           onClick: async () => {
             try {
               await this.dataService.deleteItem(item._id).toPromise();
+              this.reload$.next('reload');
               modal.destroy();
             } catch (err) {
               this.modalService.error({
