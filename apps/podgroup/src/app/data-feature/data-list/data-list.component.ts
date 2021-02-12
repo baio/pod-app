@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import {
   Data,
   DataListOrder,
@@ -58,6 +58,7 @@ const defaultView: TableView = {
   selector: 'app-data-list',
   templateUrl: './data-list.component.html',
   styleUrls: ['./data-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DataListComponent {
   private readonly reload$ = new Subject<
@@ -82,7 +83,7 @@ export class DataListComponent {
 
   constructor(
     private readonly dataService: DataService,
-    private readonly modalService: NzModalService,
+    private readonly modalService: NzModalService
   ) {
     const reload$ = this.reload$.pipe(
       scan((acc, curr) => {
