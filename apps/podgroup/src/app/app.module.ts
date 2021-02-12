@@ -10,8 +10,9 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BASE_URL } from './data-feature';
+import { API_BASE_URL } from './data-feature';
 import { IconsProviderModule } from './icons-provider.module';
+import { environment } from '../environments/environment';
 
 registerLocaleData(en);
 
@@ -29,7 +30,7 @@ registerLocaleData(en);
   ],
   providers: [
     { provide: NZ_I18N, useValue: en_US },
-    { provide: BASE_URL, useValue: 'http://localhost:3333/' },
+    { provide: API_BASE_URL, useValue: environment.apiBaseUrl },
   ],
   bootstrap: [AppComponent],
 })

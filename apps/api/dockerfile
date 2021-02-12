@@ -1,0 +1,15 @@
+FROM node:14.15-alpine
+ENV NODE_ENV development
+
+# Set app directory
+WORKDIR /app
+
+# Install app dependencies
+COPY nx.json package.json npm-shrinkwrap.json ./
+RUN npm install -D
+
+COPY tsconfig.base.json angular.json ./
+COPY libs libs
+COPY env env
+
+CMD npm run start api

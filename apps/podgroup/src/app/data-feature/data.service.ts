@@ -27,7 +27,7 @@ export class DataService {
     return this.http.post(`${this.baseUrl}api/data`, data);
   }
 
-  updateItem(id: string, data: Data) {
+  updateItem(id: string, data: Data) {      
     return this.http.put(`${this.baseUrl}api/data/${id}`, data);
   }
 

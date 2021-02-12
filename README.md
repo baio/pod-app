@@ -1,5 +1,18 @@
 # Podgroup
 
+## Development
+
+There is 2 way to start project locally
+
++ The simplest - using docker compose `docker-compose up` it will start mongo, api and application. API will start on 3333 port and app on 4200, make sure these ports are available
+
++ Start all manually
+    + Ensure mongo run
+    + Migrate data (see API dev section)
+    + Ensure `env/.env` file contains correct config to connect mongo (tested connections without authorization)
+    + `npm run start api` will run api app (see API run section)
+    + `npm run start podgroup` it will start app on port 4200 and it will be connected to api on port 3333
+
 ## API Dev 
 
 Import data to mongodb in docker (expect `local-mongo` is the container name of mongo)
